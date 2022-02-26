@@ -14,27 +14,28 @@
     <div class="gameControls">
       <div class="player">
         <label for="playerName">(X) Player 1 name:</label>
-        <input type="text" class="playerName" id="playerName">
+        <input type="text" class="player1Name" id="playerName">
       </div>
       <div class="player">
         <label for="playerName">(O) Player 2 name:</label>
-        <input type="text" class="playerName" id="playerName">
+        <input type="text" class="player2Name" id="playerName">
       </div>
       <div class="startGame">
-        <button>START</button>
+        <button class="startBtn" type="submit">START</button>
       </div>
     </div>
     <div class="board">
-      <button class="field"></button>
-      <button class="field"></button>
-      <button class="field"></button>
-      <button class="field"></button>
-      <button class="field"></button>
-      <button class="field"></button>
-      <button class="field"></button>
-      <button class="field"></button>
-      <button class="field"></button>
-    </div>    
+      <button class="field" id="0"></button>
+      <button class="field" id="1"></button>
+      <button class="field" id="2"></button>
+      <button class="field" id="3"></button>
+      <button class="field" id="4"></button>
+      <button class="field" id="5"></button>
+      <button class="field" id="6"></button>
+      <button class="field" id="7"></button>
+      <button class="field" id="8"></button>
+    </div>   
+    <button class="reset">Reset</button> 
   </div>
 </body>
 </html>
