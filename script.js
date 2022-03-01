@@ -1,9 +1,11 @@
 const gameboard = ( () => {
   let board = Array(9).fill(null); 
 
-  const resetBoard = () => {
+  const resetBoard = (result, resetBtn) => {
     board = Array(9).fill(null);;
     getBoard();
+    (document.querySelector(".gameControls")).lastChild.remove();
+    (document.querySelector(".gameControls")).lastChild.remove();
   };
   
   // gets the current board array and applies the contents to the game board 
@@ -12,11 +14,14 @@ const gameboard = ( () => {
     for (i = 0; i < (board).length; i++) {
       fields[i].textContent = board[i];
       }
+      fields.forEach(field => {
+        field.disabled = false;
+        })
   };
 
   //get value from DOM (marker and position), set board array value
-  const setCell = (marker, fieldPos) => {
-    board[fieldPos] = marker;
+  const setCell = (currentPlayer, fieldPos) => {
+    board[fieldPos] = currentPlayer.marker;
   };
 
   const winConditions = [
@@ -29,19 +34,22 @@ const gameboard = ( () => {
     [0, 4, 8],
     [2, 4, 6],
   ];
-  const checkForWin = (turnCounter, marker) => {
+  const checkForWin = (turnCounter, currentPlayer) => {
     if (turnCounter === 9) {
-      const tieMsg = document.createElement("p");
-      tieMsg.textContent = "Tie Game!";
-      const resetBtn = document.createElement("button");
-      resetBtn.innerText = "RESET"
-      resetBtn.addEventListener("click", resetBoard);
-      document.querySelector(".gameControls").append(tieMsg, resetBtn);
+      message = "Tie Game!";
+      Gameplay.displayResult(message);
     }
     else {
       winConditions.forEach((condition) => {
-        if(board[condition[0]]=== marker && board[condition[1]] === marker && board[condition[2]] === marker)
-        console.log("winner!");
+        marker = currentPlayer.marker;
+        if (board[condition[0]]=== marker && board[condition[1]] === marker && board[condition[2]] === marker) {
+        message = Gameplay.currentPlayer.name + " wins the game!";
+        Gameplay.displayResult(message);
+        }
+        else {
+          return;
+        }
+        
       })
   }
 }
@@ -60,13 +68,12 @@ const PlayerFactory = (name, marker) => {
     return {name, marker}
 };
 
-let player1Name = "Will";
-let player2Name = "Jen";
-
 const Gameplay = ( () => {
-
+  let player1Name = document.querySelector(".player1Name").value;
+  let player2Name = document.querySelector(".player2Name").value;
   let player1 = PlayerFactory(player1Name, "x");
   let player2 = PlayerFactory(player2Name, "o");
+
   let turnCounter = 0
 
   let currentPlayer = player1;
@@ -76,32 +83,45 @@ const Gameplay = ( () => {
       return;
     }
     let fieldPos = field.getAttribute("id");
-    marker = currentPlayer.marker;
     turnCounter += 1;
-    gameboard.setCell(marker, fieldPos);
+    gameboard.setCell(currentPlayer, fieldPos);
     gameboard.getBoard();
+    gameboard.checkForWin(turnCounter, currentPlayer);
     switchPlayers();
-    gameboard.checkForWin(turnCounter, marker);
+    
   }
 
-
-  let fields = Array.from(document.querySelectorAll(".field"));
+  let fields = Array.from(document.querySelectorAll(".field"))
   fields.forEach(field => {
     field.addEventListener("click", () => {
-      makeMove(field)
+      makeMove(field);
     })
   });
 
+  const displayResult = (message) => {
+    const result = document.createElement("p");
+      result.textContent = message;
+      const resetBtn = document.createElement("button");
+      resetBtn.innerText = "RESET"
+      resetBtn.addEventListener("click", () => {
+        gameboard.resetBoard(result, resetBtn)
+      });
+      document.querySelector(".gameControls").append(result, resetBtn);
+      fieldToggle();
+      turnCounter = 0;
 
-  //Stick this in win conditions after
- 
-
-
-    
-   
-
-
-
+  } 
+  
+  const fieldToggle = () => {
+    fields.forEach(field => {
+      if (field.disabled) {
+        field.disabled = false;
+      }
+      else {
+        field.disabled = true;
+      }
+    })
+  }
 
   const switchPlayers = () => {
     if(currentPlayer===player1){
@@ -111,18 +131,20 @@ const Gameplay = ( () => {
     }
   }
 
-function start() {
-  const startBtn = document.querySelector(".startBtn");
-  startBtn.addEventListener("click", () => {
+  const start = () => {
     player1Name = document.querySelector(".player1Name").value;
     player2Name = document.querySelector(".player2Name").value;
-    console.log(player1Name, player2Name);
-    setPlayers(player1Name. player2Name);
-  });
-}
+    fieldToggle();
 
-start();
+  let startBtn = document.querySelector(".startBtn");
+  console.log(startBtn);
+  startBtn.addEventListener("click", start);
+  
+  fieldToggle();
+ 
+  }
 
-  return {switchPlayers, start, makeMove, fields, turnCounter}
+  return {switchPlayers, start, makeMove, displayResult, fields, turnCounter, currentPlayer,fieldToggle}
+
   })();
 
