@@ -35,6 +35,10 @@ body {
   font-size: 4rem;
 }
 
+.field:disabled {
+  background-color: #aaa;
+}
+
 .reset {
   margin-top: 15px;
 }
