@@ -37,8 +37,6 @@ const gameboard = ( () => {
   ];
   const checkForWin = (turnCounter, currentPlayer) => {
     let winner = false;
-    console.log(turnCounter);
-    console.log(currentPlayer);
     winConditions.forEach((condition) => {
       marker = currentPlayer.marker;
       if (board[condition[0]]=== marker && board[condition[1]] === marker && board[condition[2]] === marker) {
@@ -51,10 +49,6 @@ const gameboard = ( () => {
         Gameplay.displayResult(message);
         winner = true;
       }
-      // else if (turnCounter === 9 && winner == false) {
-      //   message = "Tie Game!";
-      //   Gameplay.displayResult(message);
-      // }
       else {
         return;
       }  
@@ -70,15 +64,11 @@ const gameboard = ( () => {
 })();
 
 
-
-// player needs to get marker assigned, depending which player plays, the marker is different..and that in turn will change the field..which should update the board array
 const PlayerFactory = (name, marker) => {
     name;
     marker;
     return {name, marker}
 };
-
-
 
 const Gameplay = ( () => {
   let players = []
@@ -118,9 +108,6 @@ const Gameplay = ( () => {
     gameboard.setCell(currentPlayer, fieldPos);
     gameboard.getBoard();
     gameboard.checkForWin(turnCounter, currentPlayer);
-
-    return {currentPlayer}
-    
   }
 
   let fields = Array.from(document.querySelectorAll(".field"))
@@ -166,7 +153,7 @@ const Gameplay = ( () => {
   
   fieldToggle();
 
-  return {switchPlayers, makeMove, displayResult, fields, turnCounter,  fieldToggle, start, players, currentPlayer, player1, player2}
+  return {displayResult, fieldToggle, start}
 
   })();
 
