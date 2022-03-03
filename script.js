@@ -1,7 +1,7 @@
 const gameboard = ( () => {
   let board = Array(9).fill(null); 
 
-  const resetBoard = (result, resetBtn) => {
+  const resetBoard = () => {
     board = Array(9).fill(null);;
     getBoard();
     (document.querySelector(".gameControls")).lastChild.remove();
@@ -35,25 +35,25 @@ const gameboard = ( () => {
     [2, 4, 6],
   ];
   const checkForWin = (turnCounter, currentPlayer) => {
-    if (turnCounter === 9) {
-      message = "Tie Game!";
-      Gameplay.displayResult(message);
-    }
-    else {
-      winConditions.forEach((condition) => {
-        marker = currentPlayer.marker;
-        if (board[condition[0]]=== marker && board[condition[1]] === marker && board[condition[2]] === marker) {
-        message = Gameplay.currentPlayer.name + " wins the game!";
+    winConditions.forEach((condition) => {
+      marker = currentPlayer.marker;
+      if (board[condition[0]]=== marker && board[condition[1]] === marker && board[condition[2]] === marker) {
+        message = currentPlayer.name + " wins the game!";
         Gameplay.displayResult(message);
-        }
-        else {
-          return;
-        }
-        
-      })
+      }
+      else if (turnCounter === 9 && (board[condition[0]]=== marker && board[condition[1]] === marker && board[condition[2]] === marker)) {
+        message = currentPlayer.name + " wins the game!";
+        Gameplay.displayResult(message);
+      }
+      else if (turnCounter === 9 && (board[condition[0]]!== marker && board[condition[1]] !== marker && board[condition[2]] !== marker)) {
+        message = "Tie Game!";
+        Gameplay.displayResult(message);
+      }
+      else {
+        return;
+      }
+    })
   }
-}
-
 
   return {setCell, resetBoard, getBoard, setCell, checkForWin};
   
@@ -68,26 +68,41 @@ const PlayerFactory = (name, marker) => {
     return {name, marker}
 };
 
+
+
 const Gameplay = ( () => {
-  let player1Name = document.querySelector(".player1Name").value;
-  let player2Name = document.querySelector(".player2Name").value;
-  let player1 = PlayerFactory(player1Name, "x");
-  let player2 = PlayerFactory(player2Name, "o");
+  let players = []
+  let player1;
+  let player2;
+  let currentPlayer;
+
+  const start = () => {
+    players[0] = PlayerFactory(document.querySelector(".player1Name").value, "x");
+    players[1] = PlayerFactory(document.querySelector(".player2Name").value, "o");
+    fieldToggle();
+    return players
+  }
+
+  player1 = players[0];
+  player2 = players[1];
 
   let turnCounter = 0
 
-  let currentPlayer = player1;
-
   const makeMove = (field) => {
+    player1 = players[0];
+    player2 = players[1];
+    currentPlayer = switchPlayers(player1, player2);
     if (field.textContent != "") {
       return;
     }
     let fieldPos = field.getAttribute("id");
     turnCounter += 1;
     gameboard.setCell(currentPlayer, fieldPos);
+    console.log(currentPlayer)
     gameboard.getBoard();
     gameboard.checkForWin(turnCounter, currentPlayer);
-    switchPlayers();
+
+    return {currentPlayer}
     
   }
 
@@ -104,12 +119,12 @@ const Gameplay = ( () => {
       const resetBtn = document.createElement("button");
       resetBtn.innerText = "RESET"
       resetBtn.addEventListener("click", () => {
-        gameboard.resetBoard(result, resetBtn)
+        gameboard.resetBoard()
+        switchPlayers();
       });
       document.querySelector(".gameControls").append(result, resetBtn);
       fieldToggle();
       turnCounter = 0;
-
   } 
   
   const fieldToggle = () => {
@@ -123,28 +138,22 @@ const Gameplay = ( () => {
     })
   }
 
-  const switchPlayers = () => {
+  const switchPlayers = (player1, player2) => {
     if(currentPlayer===player1){
       currentPlayer=player2;
     } else {
       currentPlayer=player1;
     }
+    return currentPlayer;
   }
-
-  const start = () => {
-    player1Name = document.querySelector(".player1Name").value;
-    player2Name = document.querySelector(".player2Name").value;
-    fieldToggle();
-
-  let startBtn = document.querySelector(".startBtn");
-  console.log(startBtn);
-  startBtn.addEventListener("click", start);
   
   fieldToggle();
- 
-  }
 
-  return {switchPlayers, start, makeMove, displayResult, fields, turnCounter, currentPlayer,fieldToggle}
+  return {switchPlayers, makeMove, displayResult, fields, turnCounter,  fieldToggle, start, players, currentPlayer, player1, player2}
 
   })();
+
+
+let startBtn = document.querySelector(".startBtn");
+startBtn.addEventListener("click", Gameplay.start);
 
