@@ -36,6 +36,7 @@ const gameboard = ( () => {
     [2, 4, 6],
   ];
   const checkForWin = (turnCounter, currentPlayer) => {
+    let winner = false;
     console.log(turnCounter);
     console.log(currentPlayer);
     winConditions.forEach((condition) => {
@@ -43,18 +44,24 @@ const gameboard = ( () => {
       if (board[condition[0]]=== marker && board[condition[1]] === marker && board[condition[2]] === marker) {
         message = currentPlayer.name + " wins the game!";
         Gameplay.displayResult(message);
+        winner = true;
       }
       else if (turnCounter === 9 && (board[condition[0]]=== marker && board[condition[1]] === marker && board[condition[2]] === marker)) {
         message = currentPlayer.name + " wins the game!";
         Gameplay.displayResult(message);
+        winner = true;
       }
+      // else if (turnCounter === 9 && winner == false) {
+      //   message = "Tie Game!";
+      //   Gameplay.displayResult(message);
+      // }
       else {
         return;
       }  
      })
-     if (turnCounter === 9) {
-      message = "Tie Game!";
-      Gameplay.displayResult(message);
+     if (turnCounter === 9 && winner == false) {
+        message = "Tie Game!";
+        Gameplay.displayResult(message);
     } 
   }
 
@@ -108,9 +115,7 @@ const Gameplay = ( () => {
     }
     let fieldPos = field.getAttribute("id");
     turnCounter += 1;
-    console.log(turnCounter);
     gameboard.setCell(currentPlayer, fieldPos);
-    console.log(currentPlayer)
     gameboard.getBoard();
     gameboard.checkForWin(turnCounter, currentPlayer);
 
