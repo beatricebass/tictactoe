@@ -77,8 +77,16 @@ const Gameplay = ( () => {
   let currentPlayer;
 
   const start = () => {
-    players[0] = PlayerFactory(document.querySelector(".player1Name").value, "x");
-    players[1] = PlayerFactory(document.querySelector(".player2Name").value, "o");
+    player1Name = document.querySelector(".player1Name").value
+    if (document.querySelector(".player1Name").value == "") {
+      player1Name = "Player 1"
+    }
+    player2Name = document.querySelector(".player2Name").value
+    if (document.querySelector(".player2Name").value == "") {
+      player2Name = "Player 2"
+    }
+    players[0] = PlayerFactory(player1Name, "x");
+    players[1] = PlayerFactory(player2Name, "o");
     fieldToggle();
     return players
   }
