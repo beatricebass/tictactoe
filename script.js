@@ -4,6 +4,7 @@ const gameboard = ( () => {
   const resetBoard = () => {
     board = Array(9).fill(null);;
     getBoard();
+    Gameplay.fieldToggle();
     (document.querySelector(".gameControls")).lastChild.remove();
     (document.querySelector(".gameControls")).lastChild.remove();
   };
